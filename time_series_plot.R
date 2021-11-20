@@ -1,35 +1,42 @@
-library(tidyverse)
+
 library(dslabs)
+library(tidyverse)
 data(gapminder)
-# scatterplot of US fertility by year
-gapminder %>%
-  filter(country == "United States") %>%
+### Fixed scales for better comparisons
+
+filter(gapminder, year%in%c(1962, 2012)) %>%
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_wrap(. ~ year, scales = "free")
+
+###Time series plots
+gapminder %>% 
+  filter(country == "United States") %>% 
   ggplot(aes(year, fertility)) +
   geom_point()
-
-# line plot of US fertility by year
-gapminder %>%
-  filter(country == "United States") %>%
+###to make it linear and join these points to create curve
+gapminder %>% 
+  filter(country == "United States") %>% 
   ggplot(aes(year, fertility)) +
   geom_line()
-# line plot fertility time series for two countries- only one line (incorrect)
-countries <- c("South Korea", "Germany")
-gapminder %>% filter(country %in% countries) %>%
-  ggplot(aes(year, fertility)) +
-  geom_line()
+###curves for 2 diff country
 
-# line plot fertility time series for two countries - one line per country
-gapminder %>% filter(country %in% countries) %>%
-  ggplot(aes(year, fertility, group = country)) +
-  geom_line()
+countries <- c("South Korea","Germany")
 
-# fertility time series for two countries - lines colored by country
-gapminder %>% filter(country %in% countries) %>%
+gapminder %>% filter(country %in% countries) %>% 
+  ggplot(aes(year,fertility)) +
+  geom_line()
+###for two seperate curve
+countries <- c("South Korea","Germany")
+
+gapminder %>% filter(country %in% countries & !is.na(fertility)) %>% 
   ggplot(aes(year, fertility, col = country)) +
   geom_line()
-# life expectancy time series - lines colored by country and labeled, no legend
-labels <- data.frame(country = countries, x = c(1975, 1965), y = c(60, 72))
-gapminder %>% filter(country %in% countries) %>%
+
+###labelling : define a data table with the label
+labels <- data.frame(country = countries, x = c(1975,1965), y = c(60,72))
+gapminder %>% 
+  filter(country %in% countries) %>% 
   ggplot(aes(year, life_expectancy, col = country)) +
   geom_line() +
   geom_text(data = labels, aes(x, y, label = country), size = 5) +
