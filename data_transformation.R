@@ -13,3 +13,8 @@ gapminder %>%
   filter(year == past_year & !is.na(gdp)) %>%
   ggplot(aes(log2(dollars_per_day))) + 
   geom_histogram(binwidth = 1, color = "black")
+gapminder %>% 
+  filter(year == past_year & !is.na(gdp)) %>%
+  ggplot(aes(dollars_per_day)) + 
+  geom_histogram(binwidth = 1, color = "black") +
+  scale_x_continuous(trans = "log2")
